@@ -8,9 +8,9 @@ import java.util.Date;
 public class FlightDetailsDTO {
 	
 	private String route;
-	private String depature;
+	private String departure;
 	private String arrival;
-	private String depatureTime;
+	private String departureTime;
 	private String arrivalTime;
 	private Date depatureDateTime;
 	private Date arrivalDateTime;
@@ -22,23 +22,11 @@ public class FlightDetailsDTO {
 	public void setRoute(String route) {
 		this.route = route;
 	}
-	public String getDepature() {
-		return depature;
-	}
-	public void setDepature(String depature) {
-		this.depature = depature;
-	}
 	public String getArrival() {
 		return arrival;
 	}
 	public void setArrival(String arrival) {
 		this.arrival = arrival;
-	}
-	public String getDepatureTime() {
-		return depatureTime;
-	}
-	public void setDepatureTime(String depatureTime) {
-		this.depatureTime = depatureTime;
 	}
 	public String getArrivalTime() {
 		return arrivalTime;
@@ -57,6 +45,18 @@ public class FlightDetailsDTO {
 	}
 	public void setArrivalDateTime(Date arrivalDateTime) {
 		this.arrivalDateTime = arrivalDateTime;
+	}
+	public String getDeparture() {
+		return departure;
+	}
+	public void setDeparture(String departure) {
+		this.departure = departure;
+	}
+	public String getDepartureTime() {
+		return departureTime;
+	}
+	public void setDepartureTime(String departureTime) {
+		this.departureTime = departureTime;
 	}
 	
 	

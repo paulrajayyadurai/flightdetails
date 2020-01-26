@@ -4,8 +4,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -33,8 +35,9 @@ public class FlightDetailsServiceImpl implements IFlightDetailsService {
 		List<FlightDetailsDTO> filghtDetailsDTOList = new ArrayList<FlightDetailsDTO>();
 		getCheapFlightDetails(filghtDetailsDTOList);
 		getBusinessFlightDetails(filghtDetailsDTOList);
-
-		return filghtDetailsDTOList;
+		List<FlightDetailsDTO> sortedDetailsDTOList = filghtDetailsDTOList.stream()
+				.sorted(Comparator.comparing(FlightDetailsDTO::getArrivalDateTime)).collect(Collectors.toList());
+		return sortedDetailsDTOList;
 
 	}
 
@@ -46,8 +49,8 @@ public class FlightDetailsServiceImpl implements IFlightDetailsService {
 				.exchange("https://tokigames-challenge.herokuapp.com/api/flights/cheap", HttpMethod.GET, entity,
 						FlightDataDTO.class)
 				.getBody();
-		
-		List<FlightDetailsDTO> flightDetailsDTOList =  populateCheapFlightDetails( cheapFlightDataDTO);
+
+		List<FlightDetailsDTO> flightDetailsDTOList = populateCheapFlightDetails(cheapFlightDataDTO);
 		filghtDetailsDTOList.addAll(flightDetailsDTOList);
 	}
 
@@ -60,11 +63,9 @@ public class FlightDetailsServiceImpl implements IFlightDetailsService {
 				.exchange("https://tokigames-challenge.herokuapp.com/api/flights/business", HttpMethod.GET, entity,
 						FlightDataDTO.class)
 				.getBody();
-		List<FlightDetailsDTO> flightDetailsDTOList =  populateBusinessFlightDetails( businessFlightDataDTO);
+		List<FlightDetailsDTO> flightDetailsDTOList = populateBusinessFlightDetails(businessFlightDataDTO);
 		filghtDetailsDTOList.addAll(flightDetailsDTOList);
 	}
-
-	
 
 	private List<FlightDetailsDTO> populateCheapFlightDetails(FlightDataDTO cheapFlightDataDTO) {
 		List<FlightDetailsDTO> flightDetailsDTOList = new ArrayList<FlightDetailsDTO>();
@@ -76,8 +77,8 @@ public class FlightDetailsServiceImpl implements IFlightDetailsService {
 				flightDetailsDTO = new FlightDetailsDTO();
 
 				flightDetailsDTO.setRoute(flightData.getRoute());
-				flightDetailsDTO.setArrivalTime(flightData.getArrival());
-				flightDetailsDTO.setDepatureTime(flightData.getDepature());
+				flightDetailsDTO.setArrivalDateTime(convertTimeStamp(flightData.getArrival()));
+				flightDetailsDTO.setDepatureDateTime(convertTimeStamp(flightData.getDeparture()));
 
 				flightDetailsDTOList.add(flightDetailsDTO);
 			}
@@ -97,9 +98,9 @@ public class FlightDetailsServiceImpl implements IFlightDetailsService {
 				flightDetailsDTO = new FlightDetailsDTO();
 
 				flightDetailsDTO.setArrival(flightData.getArrival());
-				flightDetailsDTO.setDepature(flightData.getDepature());
-				flightDetailsDTO.setArrivalTime(flightData.getArrivalTime());
-				flightDetailsDTO.setDepatureTime(flightData.getDepatureTime());
+				flightDetailsDTO.setDeparture(flightData.getDeparture());
+				flightDetailsDTO.setArrivalDateTime(convertTimeStamp(flightData.getArrivalTime()));
+				flightDetailsDTO.setDepatureDateTime(convertTimeStamp(flightData.getDepartureTime()));
 
 				flightDetailsDTOList.add(flightDetailsDTO);
 			}
@@ -108,7 +109,19 @@ public class FlightDetailsServiceImpl implements IFlightDetailsService {
 
 		return flightDetailsDTOList;
 	}
-	
-	
-	
+
+	private Date convertTimeStamp(String timeStampString) {
+		Date date = null;
+		if (null != timeStampString) {
+			try {
+				SimpleDateFormat sf = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss z");
+				date = new Date(Long.parseLong(timeStampString.substring(0, timeStampString.indexOf("."))));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return date;
+	}
+
 }

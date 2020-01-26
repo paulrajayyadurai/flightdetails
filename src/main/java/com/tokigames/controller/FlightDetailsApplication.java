@@ -16,8 +16,6 @@ import org.springframework.web.client.RestTemplate;
  */
 @SpringBootApplication
 @ComponentScan(basePackages = ("com.**"))
-@EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class })
-@EnableConfigurationProperties
 public class FlightDetailsApplication {
 
 	public static void main(final String[] args) {
