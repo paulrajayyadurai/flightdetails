@@ -1,0 +1,12 @@
+server:
+  servlet: 
+    contextPath: ${APPLICATION_PATH:/@project.artifactId@}
+spring:
+  profiles.active: local
+
+server.port : 60001
+---
+spring:
+  profiles: local
+
+  
